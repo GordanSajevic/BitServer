@@ -10,6 +10,13 @@ import java.util.concurrent.Executors;
 
 import ba.bitcamp.logger.Logger;
 
+/**
+ * ConnectionListener class
+ * This class creates server socket.
+ * @author gordansajevic
+ *
+ */
+
 public class ConnectionListener {
 
 	private static int port = 8080;
@@ -22,6 +29,9 @@ public class ConnectionListener {
 		logs.put("warning", "warning");
 		logs.put("error", "error");
 		try {
+			
+			//Initialization of logger
+			
 			new Logger(logs);
 		} catch (FileNotFoundException e1) {
 			System.err.println("Could not initialize logger");
@@ -29,8 +39,14 @@ public class ConnectionListener {
 		}
 
 		try {
+			
+			//Creating server socket
+			
 			ServerSocket server = new ServerSocket(port);
 			while (true) {
+				
+				//Connection between server and client
+				
 				Socket client = server.accept();
 				Logger.log("applicationLog", client.getInetAddress()
 						.getHostAddress() + " just connected");

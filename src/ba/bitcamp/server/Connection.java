@@ -11,14 +11,39 @@ import java.net.Socket;
 
 import ba.bitcamp.logger.Logger;
 
+/**
+ * This class creates client by accepting client socket in constructor.
+ * Class implements Runnable interface.
+ * @author gordansajevic
+ *
+ */
+
 public class Connection implements Runnable {
 
 	private Socket client;
+	
+	//We have three allowed extensions: htm, js and css
+	
+	private String[] extensions = {".html", ".js", ".css"};
 
+	/**
+	 * Constructor with socket as parameter
+	 * @param client
+	 */
+	
 	public Connection(Socket client) {
+		
+		//Initialization of client socket
+		
 		this.client = client;
 	}
 
+	/**
+	 * This method overrides run method from Runnable interface.
+	 * In this method we accept GET request and check if file exist.
+	 * Then we write file to output stream.
+	 */
+	
 	@Override
 	public void run() {
 
@@ -83,6 +108,10 @@ public class Connection implements Runnable {
 
 	}
 
+	/**
+	 * Method closes client socket, and throws an exception if necessary
+	 */
+	
 	private void closeClient() {
 		try {
 			client.close();
@@ -91,6 +120,14 @@ public class Connection implements Runnable {
 		}
 	}
 
+	/**
+	 * Method checks does file have valid extension(html, js or css) and creates base path.
+	 * If there is no extension at all, method adds default extension html.
+	 * If file name is empty, method adds default name index.html. 
+	 * @param request
+	 * @return basePath + fileName
+	 */
+	
 	private String getFileName(String request) {
 		String[] parts = request.split(" ");
 		String fileName = null;
@@ -105,7 +142,23 @@ public class Connection implements Runnable {
 			return basePath + "index.html";
 
 		if (!fileName.contains(".")) {
-			fileName += ".html";
+			fileName += extensions[0];
+		}
+		if (fileName.contains(extensions[1])) {
+			basePath += "assets" + File.separator + "js" + File.separator;
+		}
+		if (fileName.contains(extensions[2])) {
+			basePath += "assets" + File.separator + "css" + File.separator;
+		}
+		else
+		{
+			Logger.log("error", "Wrong extension!");
+			try {
+				Response.error(new PrintStream(client.getOutputStream()), "Wrong extension!");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return basePath + fileName;
 	}
