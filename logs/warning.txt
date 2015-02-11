@@ -1,0 +1,2 @@
+Wed Feb 11 10:25:32 CET 2015 Client requested missing file ./html/favicon.ico (No such file or directory)
+Wed Feb 11 10:25:32 CET 2015 Client requested missing file ./html/favicon.ico (No such file or directory)
