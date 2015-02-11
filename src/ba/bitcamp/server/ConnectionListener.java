@@ -11,36 +11,38 @@ import java.util.concurrent.Executors;
 import ba.bitcamp.logger.Logger;
 
 public class ConnectionListener {
-	
-	private static final int port = 8080;
-	
-	public static void main(String[] args){
+
+	private static int port = 8080;
+
+	public static void main(String[] args) {
+
 		ExecutorService pool = Executors.newFixedThreadPool(10);
 		HashMap<String, String> logs = new HashMap<String, String>();
 		logs.put("applicationLog", "applicationLog");
 		logs.put("warning", "warning");
 		logs.put("error", "error");
-		try{
+		try {
 			new Logger(logs);
-		} catch(FileNotFoundException e1)
-		{
+		} catch (FileNotFoundException e1) {
 			System.err.println("Could not initialize logger");
 			System.exit(1);
 		}
+
 		try {
-			
 			ServerSocket server = new ServerSocket(port);
-			while(true)
-			{
+			while (true) {
 				Socket client = server.accept();
-				Logger.log("applicationLog", client.getInetAddress().getHostAddress() + " just connected.");
-				Connection con = new Connection(client);
-				pool.submit(con);
+				Logger.log("applicationLog", client.getInetAddress()
+						.getHostAddress() + " just connected");
+
+				pool.submit(new Connection(client));
 			}
+
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }
